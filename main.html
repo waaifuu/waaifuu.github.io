@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="main.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="main">
+    <div class="title-pic-options">
+      
+       <div v-if="loader" class="loader-body">
+        <!-- <div class="line-body">
+          <div :style="{width: lineWidth + '%'}" class="line"></div>
+        </div> -->
+          <div class="loader-wheel"></div>
+      </div> 
+      <div v-if="!loader" class="pic" style="height: 70vh">
+        <a :href="pic" target="_blank">
+          <img height="" :src="pic" alt="">
+        </a>
+      </div>
+      <div class="previous-next">
+        <div class="next" @click="previousPic">
+          <svg style="transform:rotate(90deg)" ref="arrowgenres" class="arrowgenres" width="30" height="17" viewBox="0 0 37 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="7.06835" height="26.0525" rx="3.53418" transform="matrix(0.753459 -0.657495 0.705479 0.708731 0 5.203)" fill="#ab88fd"/>
+            <rect width="7.08125" height="26.055" rx="3.54063" transform="matrix(0.648235 0.76144 -0.699958 0.714184 32.4097 0)" fill="#ab88fd"/>
+          </svg>   
+          <div>Previous</div>
+        </div>
+        <div class="previous" @click="nextPic">
+          <div>Next</div>
+          <svg style="transform:rotate(270deg)" ref="arrowgenres" class="arrowgenres" width="30" height="17" viewBox="0 0 37 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="7.06835" height="26.0525" rx="3.53418" transform="matrix(0.753459 -0.657495 0.705479 0.708731 0 5.203)" fill="#ab88fd"/>
+            <rect width="7.08125" height="26.055" rx="3.54063" transform="matrix(0.648235 0.76144 -0.699958 0.714184 32.4097 0)" fill="#ab88fd"/>
+          </svg> 
+        </div>  
+      </div>
+      <div class="options">
+        <div class="genres-types">
+          <div class="genres-list" ref="genreslist" :style="{'height': genresListHeight + 'px'}">
+            <div @click="toggleGenres($event)" class="genres-title">
+              <div>Genres</div>
+              <svg ref="arrowgenres" style="transform: rotate(180deg)" class="arrowgenres" width="30" height="17" viewBox="0 0 37 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="7.06835" height="26.0525" rx="3.53418" transform="matrix(0.753459 -0.657495 0.705479 0.708731 0 5.203)" fill="#ab88fd"/>
+                <rect width="7.08125" height="26.055" rx="3.54063" transform="matrix(0.648235 0.76144 -0.699958 0.714184 32.4097 0)" fill="#ab88fd"/>
+              </svg>          
+            </div>
+            <div :style="{top: genresTop + 'px',height: genresHeight + 'px'}" @click="stopPropagation($event)" class="genres">
+              <div class="genre" @click="turnAllGenres">
+                Switch all
+                <div class="switcher all genreswitcher">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[0].transformValue+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="genre" @click="turnGenres('waifu')">
+                Waifu
+                <div class="switcher waifu genreswitcher">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[1].transformValue+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="genre" @click="turnGenres('neko')">
+                Neko
+                <div class="switcher neko genreswitcher">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[2].transformValue+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div v-show="typesSwitchers[2] === 34" class="genre" @click="turnGenres('trap')">
+                Trap
+                <div class="switcher trap nsfw genreswitcher">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[3].transformValue+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div  v-show="typesSwitchers[2] === 34" class="genre" @click="turnGenres('blowjob')">
+                Blowjob
+                <div class="switcher blowjob nsfw genreswitcher">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[4].transformValue+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <template v-if="typesSwitchers[1] === 34">
+                <div class="genre" @click="turnGenres('shinobu')">
+                  Shinobu
+                  <div class="switcher shinobu genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[5].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('megumin')">
+                  Megumin
+                  <div class="switcher megumin genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[6].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('bully')">
+                  Bully
+                  <div class="switcher bully genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[7].transformValue+'px)'}"></div>
+                    </div>
+                  </div></div>
+                <div class="genre" @click="turnGenres('cuddle')">
+                  Cuddle
+                  <div class="switcher cuddle genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[8].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('cry')">
+                  Cry
+                  <div class="switcher cry genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[9].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('hug')">
+                  Hug
+                  <div class="switcher hug genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[10].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('awoo')">
+                  Awoo
+                  <div class="switcher awoo genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[11].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('kiss')">
+                  Kiss
+                  <div class="switcher kiss genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[12].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('lick')">
+                  Lick
+                  <div class="switcher lick genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[13].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('pat')">
+                  Pat
+                  <div class="switcher pat genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[14].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('smug')">
+                  Smug
+                  <div class="switcher smug genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[15].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('bonk')">
+                  Bonk
+                  <div class="switcher bonk genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[16].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('yeet')">
+                  Yeet
+                  <div class="switcher yeet genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[17].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('blush')">
+                  Blush
+                  <div class="switcher blush genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[18].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('smile')">
+                  Smile
+                  <div class="switcher smile genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[19].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('wave')">
+                  Wave
+                  <div class="switcher wave genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[20].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('highfive')">
+                  Highfive
+                  <div class="switcher highfive genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[21].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('handhold')">
+                  Handhold
+                  <div class="switcher handhold genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[22].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('nom')">
+                  Nom
+                  <div class="switcher nom genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[23].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('bite')">
+                  Bite
+                  <div class="switcher bite genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[24].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('glomp')">
+                  Glomp
+                  <div class="switcher glomp genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[25].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('slap')">
+                  Slap
+                  <div class="switcher slap genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[26].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('kill')">
+                  Kill
+                  <div class="switcher kill genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[27].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('kick')">
+                  Kick
+                  <div class="switcher kick genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[28].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('happy')">
+                  Happy
+                  <div class="switcher happy genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[29].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('wink')">
+                  Wink
+                  <div class="switcher wink genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[30].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('poke')">
+                  Poke
+                  <div class="switcher poke genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[31].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('dance')">
+                  Dance
+                  <div class="switcher dance genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[32].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="genre" @click="turnGenres('cringe')">
+                  Cringe
+                  <div class="switcher cringe genreswitcher">
+                    <div class="switcher-shell">
+                      <div class="switcher-circle" :style="{'transform': 'translate('+genresSwitchers[33].transformValue+'px)'}"></div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="types-list" ref="typeslist" :style="{height: typesHeight + 'px'}">
+            <div  @click="toggleTypes($event)" class="types-title">
+              <div>Types</div>
+              <svg ref="arrowtypes" style="transform: rotate(180deg)" class="arrowtypes" width="30" height="17" viewBox="0 0 37 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="7.06835" height="26.0525" rx="3.53418" transform="matrix(0.753459 -0.657495 0.705479 0.708731 0 5.203)" fill="#ab88fd"/>
+                <rect width="7.08125" height="26.055" rx="3.54063" transform="matrix(0.648235 0.76144 -0.699958 0.714184 32.4097 0)" fill="#ab88fd"/>
+              </svg>
+            </div>
+            <div class="types" :style="{top: typesTop + 'px'}" @click="stopPropagation($event)">
+              <div class="type">
+                Switch all
+                <div class="switcher typesswitcher" @click="turnAllTypes">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+typesSwitchers[0]+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="type">
+                SFW
+                <div class="switcher typesswitcher" @click="turnTypes(1)">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+typesSwitchers[1]+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="type">
+                NSFW
+                <div class="switcher typesswitcher nsfw" @click="turnTypes(2)">
+                  <div class="switcher-shell">
+                    <div class="switcher-circle" :style="{'transform': 'translate('+typesSwitchers[2]+'px)'}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="main.js"></script>
+</html>
