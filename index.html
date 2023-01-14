@@ -12,17 +12,16 @@
 <body>
   <div id="main">
     <div class="title-pic-options">
-      
        <div v-if="loader" class="loader-body">
         <!-- <div class="line-body">
           <div :style="{width: lineWidth + '%'}" class="line"></div>
         </div> -->
           <div class="loader-wheel"></div>
       </div> 
-      <div v-if="!loader" class="pic" style="height: 70vh">
-        <a :href="pic" target="_blank">
-          <img height="" :src="pic" alt="">
-        </a>
+      <div v-show="!loader" class="pic" style="height: 70vh">
+        
+          <div class="image" :style="{'background-image': `url(${pic})`}"></div>
+      
       </div>
       <div class="previous-next">
         <div class="next" @click="previousPic">

@@ -145,6 +145,14 @@
     margin-bottom: 10px;
     width: 100px;
   }
+  .image {
+    height: 100%;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    background-position: center;
+  }
   @keyframes spin {
     0% {
       transform: rotate(0deg);
